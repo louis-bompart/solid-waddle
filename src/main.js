@@ -1,5 +1,5 @@
 const { app, BrowserWindow } = require('electron');
-// const keytar = require('keytar');
+const keytar = require('keytar');
 const ref = require('ref');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -9,9 +9,19 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+keytar.findCredentials('foo');
 
-// keytar.findCredentials('foo');
-ref;
+var buf = new Buffer(4)
+buf.writeInt32LE(12345, 0)
+// first, what is the memory address of the buffer?
+console.log(buf.hexAddress())  // ← '7FA89D006FD8'
+
+// using `ref`, you can set the "type", and gain magic abilities!
+buf.type = ref.types.int
+
+// now we can dereference to get the "meaningful" value
+console.log(buf.deref())  // ← 12345
+
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
